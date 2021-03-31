@@ -1,0 +1,76 @@
+loadstring(game:HttpGet("https://raw.githubusercontent.com/xaxaxaxaxaxaxaxaxa/Bypasses/main/Da-Hood", true))()
+
+if not getgenv().Settings then 
+    getgenv().Settings = {
+        Enabled = true, -- Dont mess with this, just rejoin the game to turn the autofarm off
+        TeleportSpeed = 5, -- The Lower the Faster, the Higher the Slower
+    }
+end
+
+local Players, RService, TweenService = game:GetService"Players", game:GetService"RunService", game:GetService"TweenService";
+local Client, CF, INew, Vec3 = Players.LocalPlayer, CFrame.new, Instance.new, Vector3.new;
+
+local Path = workspace:WaitForChild"Ignored".Drop
+
+function TweenTo(Part, Speed)
+    local ClientPart = Client.Character:FindFirstChild"HumanoidRootPart";
+    local TweenInformation = TweenService:Create(ClientPart, TweenInfo.new(
+        Speed, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {CFrame = Part}
+    )
+    
+    if ClientPart and Part then 
+        TweenInformation:Play()
+    end
+end
+
+function FarmMoney()
+    local SitDetection = Client.Character:WaitForChild"Humanoid".Sit
+    
+    while RService.RenderStepped:Wait() and getgenv().Settings.Enabled == true do 
+        if SitDetection == true then 
+            SitDetection = false 
+        end
+        
+        for _, v in next, Path:GetChildren() do 
+            if v and v:IsA"Part" and v.Name == "MoneyDrop" then 
+                local FoundMoney = v
+                local ClickDetector = FoundMoney:FindFirstChild"ClickDetector";
+                local ClientPart = Client.Character:WaitForChild"HumanoidRootPart";
+                
+                if ClickDetector and ClientPart then 
+                    TweenTo(CF(FoundMoney.Position), getgenv().Settings.TeleportSpeed)
+                    
+                    repeat RService.RenderStepped:Wait()
+                    until ((ClientPart.Position - FoundMoney.Position).Magnitude <= ClickDetector.MaxActivationDistance)
+                    
+                    fireclickdetector(ClickDetector)
+                end
+            end
+        end
+    end
+end
+FarmMoney()
+
+do 
+    for _, v in next, workspace:GetDescendants() do 
+        if v and v:IsA"Seat" then 
+            v:Destroy()
+        end
+    end
+end
+
+Client.CharacterAdded:Connect(function()
+    Client.Character:WaitForChild"Humanoid"
+    
+    FarmMoney()
+end)
+
+workspace.DescendantAdded:Connect(function(Descendant)
+    if Descendant and Descendant:IsA"Seat" then 
+        Descendant:Destroy()
+    end
+end)
+
+Path.ChildAdded:Connect(function()
+    FarmMoney()
+end)
