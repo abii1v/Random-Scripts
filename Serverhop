@@ -1,0 +1,14 @@
+local HttpService, TPService = game:GetService"HttpService", game:GetService"TeleportService";
+local OtherServers = HttpService:JSONDecode(game:HttpGet("https://games.roblox.com/v1/games/"..game.PlaceId.."/servers/Public?sortOrder=Asc&limit=100")).data
+
+function ServerHop()
+    for _, v in next, OtherServers do 
+        if game.JobId ~= v.id then 
+            if v.maxPlayers ~= v.playing and v.ping < 100 then 
+                TPService:TeleportToPlaceInstance(game.PlaceId, v.id)
+                break 
+            end
+        end
+    end
+end
+ServerHop()
