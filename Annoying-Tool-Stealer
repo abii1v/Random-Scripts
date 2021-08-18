@@ -1,5 +1,7 @@
 -- init
 if not getgenv().configuration then
+    getgenv().configuration
+    
     configuration.ToggleKey = "RightAlt";
     configuration.FixKey = "LeftAlt";
 end
