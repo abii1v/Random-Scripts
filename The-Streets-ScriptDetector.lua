@@ -34,7 +34,7 @@ function PlaySound(Id)
     assert((Id or (type(Id) == "number" or type(Id) == "string")));
     
     local Sound = NewInstance("Sound", workspace)
-    Sound.SoundId = format("rbxassetid://%s", ((type(Id) == "number" and tostring(Id)) or type(Id) == "string" and Id));
+    Sound.SoundId = format("rbxassetid://%s", ((type(Id) == "number" and tostring(Id)) or (type(Id) == "string" and Id)));
     Sound.Volume = 1
     Sound.Play(Sound)
 end
